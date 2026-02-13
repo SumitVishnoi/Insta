@@ -1,0 +1,13 @@
+user {
+    username: string,
+    email: string,
+    password: string,
+    bio: string,
+    profileImage = string
+}
+
+post {
+    caption: string,
+    imgUrl: string,
+    userId: users (using user reference)
+}
