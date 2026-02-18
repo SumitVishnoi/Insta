@@ -11,3 +11,16 @@ post {
     imgUrl: string,
     userId: users (using user reference)
 }
+
+follow {
+    follower,
+    followee,
+    createdAt
+}
+
+like {
+    postId,
+    username,
+    createdAt
+}
+
