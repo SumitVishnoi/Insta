@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken")
 const postModel = require("../models/post.model")
 const likeModel = require("../models/like.model")
 
+
 const imagekit = new ImageKit({
     privateKey: process.env.IMAGEKIT_PRIVATE_KEY
 })
@@ -89,7 +90,18 @@ async function likePostController(req, res) {
 }
 
 async function getFeedController(req, res) {
-    const posts = await postModel.find().populate("user")
+    const user = req.user
+
+    const posts = await Promise.all((await postModel.find().populate("user").lean())
+    .map(async (post)=> {
+        console.log(typeof post)
+        const isLiked = await likeModel.findOne({
+            user: user.username,
+            post: post._id
+        })
+        post.isLiked = Boolean(isLiked)
+        return post
+    }))
 
     res.status(200).json({
         message: "fetched posts successfully",
