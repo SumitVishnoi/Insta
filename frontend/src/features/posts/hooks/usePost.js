@@ -1,6 +1,6 @@
 import { useContext, useEffect } from "react";
 import { PostContext } from "../post.context";
-import { createPost, getFeed } from "../services/post.api";
+import { createPost, getFeed, likePost, unLikePost } from "../services/post.api";
 
 export const usePost = () => {
   const context = useContext(PostContext);
@@ -13,7 +13,7 @@ export const usePost = () => {
     const response = await getFeed();
 
     console.log(response.posts);
-    setFeed(response.posts);
+    setFeed(response.posts.reverse());
 
     setLoading(false);
   };
@@ -27,6 +27,16 @@ export const usePost = () => {
     setLoading(false)
   }
 
+  const handleLikePost = async (postId)=> {
+    const response = await likePost(postId)
+    await handleGetFeed()
+  }
+
+  const handleUnLikePost = async (postId)=> {
+    const response = await unLikePost(postId)
+    await handleGetFeed()
+  }
+
   useEffect(()=> {
     handleGetFeed()
   }, [])
@@ -36,6 +46,8 @@ export const usePost = () => {
     post,
     feed,
     handleGetFeed,
-    handleCreatePost
+    handleCreatePost,
+    handleLikePost,
+    handleUnLikePost
   };
 };
